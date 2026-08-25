@@ -14,6 +14,24 @@
 // ============================================================
 window.ORDER_DATA = [
   {
+    no: '0082800082909725396150',
+    refNo: 'SZLD9901086977',
+    createdAt: '2026-08-25',
+    destination: 'San Fernando (Cadiz), España',
+    localTime: '2026-08-25 23:33',
+    status: '订单已创建',
+    receiver: 'Miguel Angel Betanzo',
+    receiverInfo: {
+      name: 'Miguel Angel Betanzo',
+      country: 'España',
+      city: 'San Fernando',
+      address: 'Padilla 1D',
+      cep: '11100',
+      tel: '+34 679 081 487'
+    },
+    records: []
+  },
+  {
     no: '0082800082909725396006',
     refNo: 'SZLD9901086422',
     createdAt: '2026-08-25',
