@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>轨迹查询</title>
+<style>
+  *{margin:0;padding:0;font:12px Verdana,Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+  body{background:#f4f6f8;background-attachment:fixed}
+  a{text-decoration:none}
+
+  .div_f{width:100%;overflow:hidden}
+  .div_con{width:1100px;max-width:96%;margin-top:10px;margin-left:auto;margin-right:auto}
+  .content{width:1100px;max-width:96%;margin-left:auto;margin-right:auto}
+
+  .lang-bar{float:right;margin-top:10px;margin-right:20px}
+  .lang-bar a{display:inline-block;padding:4px 10px;margin-left:5px;border:1px solid #1291c5;border-radius:3px;color:#1291c5;text-decoration:none;cursor:pointer;font-size:12px}
+  .lang-bar a.active{background:#1291c5;color:#fff}
+  .lang-bar a:hover{background:#07bde4;color:#fff;border-color:#07bde4}
+
+  .div_l{float:left;width:550px;height:250px}
+  .div_l img,.div_l svg{width:500px;height:250px;display:block}
+
+  .div_r1{float:left;margin-top:50px;width:400px;height:200px}
+  .menu_search{width:400px;height:100px;margin-top:20px;margin-bottom:40px}
+  .search{width:260px;float:left;height:100px;border-radius:5px;border:2px solid #1291c5;resize:none;padding:5px;box-sizing:border-box;font-size:14px;outline:none}
+  .search:focus{box-shadow:0 0 0 3px rgba(18,145,197,.15)}
+  .input_search{float:left;width:90px;border-radius:5px;font-size:15px;height:50px;border:0;margin-top:20px;color:#fff;background:#1291c5;margin-left:20px;cursor:pointer;letter-spacing:2px}
+  .input_search:hover{background-color:#07bde4}
+
+  .div_canta{float:left;width:100%;margin-bottom:20px}
+  .div_tb_h{float:left;border:1px solid #dcddd7;width:100%;padding:10px 14px;height:24px;box-sizing:content-box}
+  .danhao{float:left;width:320px;font-weight:600;margin-right:10px;color:#1d2088;font-size:14px}
+  .hd{float:left;color:#F00;font-weight:600}
+
+  .clearfix:after{content:"\20";display:block;height:0;line-height:0;font-size:0;clear:both}
+
+  .result-body{margin-top:12px}
+  .data-row{width:100%;float:left;margin-bottom:10px;border:1px solid #dcddd7;background:#fff}
+  .data-row .order-header{padding:6px 8px;background:#f0f5ff;font-weight:600;color:#1d2088;border-bottom:1px solid #dcddd7;font-size:13px}
+  .data-row .order-info{padding:6px 8px;border-bottom:1px solid #dcddd7;background:#fff;line-height:1.8}
+  .data-row .order-info span{display:inline-block;margin-right:15px;font-size:12px}
+  .data-row .order-info .label{color:#666}
+  .data-row .order-info .value{color:#333;font-weight:600}
+  .data-row .rcv-info{padding:6px 8px;border-bottom:1px solid #dcddd7;background:#fafafa;line-height:1.8}
+  .data-row .rcv-info span{display:inline-block;margin-right:15px;font-size:12px;color:#555}
+  .data-row .rcv-info .label{color:#666}
+  .track-table{width:100%;border-collapse:collapse;border-top:none}
+  .track-table th,.track-table td{border:1px solid #dcddd7;padding:7px 8px;text-align:left;font-size:12px}
+  .track-table th{background:#ededed;font-weight:600;color:#444}
+  .track-table tr:nth-child(even){background:#f9f9f9}
+  .no-data{text-align:center;padding:30px;color:#999;font-size:14px;border:1px solid #dcddd7;background:#fff}
+  .miss-tip{margin-top:10px;text-align:left;padding:10px 12px;border:1px solid #f0d9b5;background:#fffbf0;color:#b5782a;font-size:12px}
+
+  .manage-bar{text-align:right;margin:0 0 10px}
+  .manage-bar a{display:inline-block;padding:4px 10px;border:1px solid #1291c5;border-radius:3px;color:#1291c5;cursor:pointer;font-size:12px}
+  .manage-bar a:hover{background:#07bde4;color:#fff}
+  .manage-panel{clear:both;padding-bottom:40px;display:none}
+  .manage-panel .bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+  .manage-panel .bar h3{font-size:15px;color:#1d2088;font-weight:600}
+  .manage-panel .bar .tools{display:flex;gap:8px}
+  .btn-primary{background:#1291c5;color:#fff;border:0;border-radius:3px;padding:7px 14px;cursor:pointer;font-size:12px}
+  .btn-primary:hover{background:#07bde4}
+  .btn-outline{border:1px solid #1291c5;color:#1291c5;background:#fff;border-radius:3px;padding:7px 14px;cursor:pointer;font-size:12px}
+  .btn-outline:hover{background:#eaf6fb}
+  .btn-ghost{border:1px solid #dcddd7;color:#555;background:#fff;border-radius:3px;padding:5px 10px;cursor:pointer;font-size:12px}
+  .btn-ghost:hover{border-color:#1291c5;color:#1291c5}
+  .btn-danger{border:1px solid transparent;color:#c0392b;background:transparent;border-radius:3px;padding:5px 10px;cursor:pointer;font-size:12px}
+  .btn-danger:hover{border-color:#c0392b}
+  .order-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;
+    border:1px solid #dcddd7;background:#fff;margin-bottom:8px;border-radius:3px}
+  .order-item .no{font-weight:600;color:#1d2088;font-size:14px}
+  .order-item .meta{font-size:12px;color:#888}
+  .order-item .acts{display:flex;gap:8px;flex-shrink:0}
+  .hint{font-size:12px;color:#999;margin-top:8px;line-height:1.7}
+
+  .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;
+    justify-content:center;z-index:50;padding:30px 16px;overflow:auto}
+  .modal{background:#fff;border-radius:6px;width:100%;max-width:640px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+  .modal h3{font-size:16px;color:#1d2088;margin-bottom:16px}
+  .f-group{margin-bottom:12px}
+  .f-group label{display:block;font-size:12px;color:#666;margin-bottom:4px}
+  .f-group input{width:100%;padding:8px 10px;border:1px solid #dcddd7;border-radius:3px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}
+  .f-group input:focus{border-color:#1291c5}
+  .f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .f-sec{font-size:13px;font-weight:600;color:#1d2088;margin:14px 0 8px;padding-top:12px;border-top:1px solid #eee}
+  .ev-row{display:grid;grid-template-columns:1.1fr 0.9fr 1.4fr auto;gap:6px;margin-bottom:6px}
+  .ev-row input{padding:7px 8px;border:1px solid #dcddd7;border-radius:3px;font-size:12px;font-family:inherit;outline:none}
+  .ev-row input:focus{border-color:#1291c5}
+  .modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+  .export-box{width:100%;height:280px;font-family:Consolas,monospace;font-size:12px;border:1px solid #dcddd7;
+    border-radius:3px;padding:10px;resize:vertical;outline:none;box-sizing:border-box}
+</style>
+</head>
+<body>
+
+<div class="div_f">
+  <div class="div_con">
+    <div class="lang-bar" id="langBar">
+      <a href="javascript:void(0)" class="active" onclick="switchLang('zh')">中文</a>
+      <a href="javascript:void(0)" onclick="switchLang('es')">Espanol</a>
+      <a href="javascript:void(0)" onclick="switchLang('pt')">Portugues</a>
+    </div>
+    <div class="div_l">
+      <svg width="500" height="250" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="250" fill="none"/>
+        <g>
+          <rect x="20" y="55" width="120" height="140" rx="10" fill="#1291c5"/>
+          <rect x="20" y="55" width="120" height="140" rx="10" fill="none" stroke="#0b7aa4" stroke-width="2"/>
+          <path d="M 20 105 L 140 105" stroke="#ffffff" stroke-width="3" opacity="0.85"/>
+          <rect x="60" y="120" width="40" height="30" rx="4" fill="#ffffff"/>
+          <circle cx="80" cy="78" r="10" fill="#ffffff" opacity="0.9"/>
+          <path d="M 70 78 L 80 88 L 92 70" stroke="#1291c5" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <text x="165" y="120" font-family="Verdana,Arial" font-size="40" font-weight="600" fill="#1d2088">物流查询</text>
+        <text x="167" y="155" font-family="Verdana,Arial" font-size="22" letter-spacing="6" fill="#1291c5">TRACKING</text>
+        <text x="167" y="185" font-family="Verdana,Arial" font-size="14" fill="#888">中国到西班牙 · CTT Express</text>
+      </svg>
+    </div>
+    <div class="div_r1">
+      <div class="menu_search">
+        <form action="javascript:void(0);" onsubmit="doQuery()">
+          <textarea name="documentCode" cols="20" rows="5" class="search" id="cno" placeholder="请输入追踪号码"></textarea>
+          <button class="input_search" type="submit" id="btnQuery">查询</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="div_canta">
+  <div class="content clearfix">
+    <div class="div_con">
+      <div class="div_tb_h">
+        <div class="danhao" id="titlePrefix">【】<span id="lblShipInfo">运单信息</span></div>
+        <div class="hd" id="titleTicket"><span id="lblTicket">第</span>【】<span id="lblTicket2">票</span></div>
+      </div>
+      <div class="result-body" id="resultBody">
+        <div class="no-data" id="lblPrompt">请输入追踪号码进行查询</div>
+      </div>
+
+      <div class="manage-bar" style="margin-top:14px;">
+        <a onclick="toggleManage()" id="btnManage">管理数据</a>
+      </div>
+      <div class="manage-panel" id="managePanel">
+        <div class="bar">
+          <h3>运单数据管理</h3>
+          <div class="tools">
+            <button class="btn-primary" onclick="openEdit(null)">＋ 新增运单</button>
+            <button class="btn-outline" onclick="exportData()">导出 data.js</button>
+            <button class="btn-outline" onclick="resetData()">恢复示例数据</button>
+          </div>
+        </div>
+        <div id="orderList"></div>
+        <div class="hint">改数据后点「导出 data.js」，下载的文件替换仓库里的 data.js 即可让线上生效。本地改动会暂存在本机浏览器。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">编辑运单</h3>
+    <div class="f-row">
+      <div class="f-group"><label>运单号（查询用）</label><input id="f-no" placeholder="CTT20260824001"></div>
+      <div class="f-group"><label>参考号</label><input id="f-refNo" placeholder="REF-001"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>目的地</label><input id="f-dest" placeholder="Madrid, España"></div>
+      <div class="f-group"><label>当地时间</label><input id="f-localTime" placeholder="2026-08-24 14:30"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>最新状态</label><input id="f-status" placeholder="En tránsito"></div>
+      <div class="f-group"><label>收件人</label><input id="f-receiver" placeholder="FODE KANE"></div>
+    </div>
+
+    <div class="f-sec">收件人详细信息</div>
+    <div class="f-row">
+      <div class="f-group"><label>姓名</label><input id="f-r-name" placeholder="FODE KANE"></div>
+      <div class="f-group"><label>国家</label><input id="f-r-country" placeholder="España"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>城市</label><input id="f-r-city" placeholder="Madrid"></div>
+      <div class="f-group"><label>邮编</label><input id="f-r-cep" placeholder="28013"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>地址</label><input id="f-r-address" placeholder="Calle Mayor 12"></div>
+      <div class="f-group"><label>电话</label><input id="f-r-tel" placeholder="+34 600 000 000"></div>
+    </div>
+
+    <div class="f-sec">物流轨迹（按时间倒序，最新在最上）</div>
+    <div id="events"></div>
+    <button class="btn-ghost" onclick="addEventRow()">＋ 添加轨迹节点</button>
+
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('modal')">取消</button>
+      <button class="btn-primary" onclick="saveOrder()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="exportModal">
+  <div class="modal">
+    <h3>导出 data.js</h3>
+    <textarea class="export-box" id="exportText"></textarea>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="copyExport()">复制</button>
+      <button class="btn-primary" onclick="downloadExport()">下载 data.js</button>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+var LANG = {
+  zh: {
+    title:'轨迹查询', query:'查询', placeholder:'请输入追踪号码',
+    shipInfo:'运单信息', ticket:'第', ticket2:'票',
+    total:'共查询', found:'查到', notFound:'未查到',
+    refNo:'参考号', trackNo:'跟踪号码', dest:'目的地', localTime:'当地时间',
+    status:'最新状态', receiver:'收件人', noData:'请输入追踪号码进行查询',
+    notFoundMsg:'未找到该运单信息', receiverInfo:'收件人信息',
+    trackDetail:'物流轨迹详情', time:'时间', location:'地点', desc:'状态描述'
+  },
+  es: {
+    title:'Seguimiento', query:'Consultar', placeholder:'Ingrese su número de seguimiento',
+    shipInfo:'Información del envío', ticket:'Nº', ticket2:'',
+    total:'Total', found:'Encontrados', notFound:'No encontrados',
+    refNo:'Referencia', trackNo:'Seguimiento', dest:'Destino', localTime:'Hora local',
+    status:'Estado actual', receiver:'Destinatario', noData:'Ingrese su número de seguimiento',
+    notFoundMsg:'Envío no encontrado', receiverInfo:'Información del destinatario',
+    trackDetail:'Historial de seguimiento', time:'Fecha', location:'Ubicación', desc:'Estado'
+  },
+  pt: {
+    title:'Rastreio', query:'Pesquisar', placeholder:'Insira o número de rastreio',
+    shipInfo:'Informação do envio', ticket:'Nº', ticket2:'',
+    total:'Total', found:'Encontrados', notFound:'Não encontrados',
+    refNo:'Referência', trackNo:'Rastreio', dest:'Destino', localTime:'Hora local',
+    status:'Estado atual', receiver:'Destinatário', noData:'Insira o número de rastreio',
+    notFoundMsg:'Envio não encontrado', receiverInfo:'Informação do destinatário',
+    trackDetail:'Histórico de rastreio', time:'Data', location:'Local', desc:'Estado'
+  }
+};
+var currentLang = 'zh';
+function t(key){ return LANG[currentLang][key] || key; }
+
+function switchLang(lang){
+  currentLang = lang;
+  document.title = t('title');
+  document.getElementById('cno').placeholder = t('placeholder');
+  document.getElementById('btnQuery').textContent = t('query');
+  document.getElementById('lblShipInfo').textContent = t('shipInfo');
+  document.getElementById('lblTicket').textContent = t('ticket');
+  document.getElementById('lblTicket2').textContent = t('ticket2');
+  document.getElementById('lblPrompt').textContent = t('noData');
+  var items = document.querySelectorAll('#langBar a');
+  for(var i=0;i<items.length;i++) items[i].className='';
+  var langMap = {zh:0, es:1, pt:2};
+  if(langMap[lang] !== undefined) items[langMap[lang]].className='active';
+  var input = document.getElementById('cno').value.trim();
+  if(input) doQuery();
+}
+
+const STORE_KEY = 'ctt_orders_draft_v1';
+function getDefaultOrders(){
+  if(window.ORDER_DATA && window.ORDER_DATA.length) return JSON.parse(JSON.stringify(window.ORDER_DATA));
+  return [];
+}
+function loadOrders(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return getDefaultOrders();
+}
+function saveDraft(arr){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(arr)); }catch(e){} }
+var orders = loadOrders();
+
+function splitCodes(input){
+  return input.split(/[\n,，\s;；]+/).filter(function(c){ return c.trim() !== ''; });
+}
+
+function doQuery(){
+  var input = document.getElementById('cno').value.trim();
+  if(!input){ alert(t('placeholder')); return; }
+  var codes = splitCodes(input);
+  var found = [], notFound = [];
+  for(var i=0;i<codes.length;i++){
+    var code = codes[i].trim();
+    var d = orders.find(function(o){ return o.no.toLowerCase() === code.toLowerCase(); });
+    if(d) found.push(d); else notFound.push(code);
+  }
+  document.getElementById('titlePrefix').innerHTML = '【' + t('total') + codes.length + '】' + t('shipInfo');
+  document.getElementById('titleTicket').innerHTML = t('found') + found.length + ' ' + t('ticket2') + '，' + t('notFound') + notFound.length + ' ' + t('ticket2');
+
+  var html = '';
+  for(var n=0;n<found.length;n++){
+    var d = found[n];
+    html += '<div class="data-row">';
+    html += '<div class="order-header">' + d.no + '</div>';
+    html += '<div class="order-info">';
+    html += '<span><span class="label">' + t('refNo') + ':</span> <span class="value">' + (d.refNo || '-') + '</span></span>';
+    html += '<span><span class="label">' + t('trackNo') + ':</span> <span class="value">' + d.no + '</span></span>';
+    html += '<span><span class="label">' + t('dest') + ':</span> <span class="value">' + (d.destination || '-') + '</span></span>';
+    html += '<span><span class="label">' + t('localTime') + ':</span> <span class="value">' + (d.localTime || '-') + '</span></span>';
+    html += '<span><span class="label">' + t('status') + ':</span> <span class="value">' + (d.status || '-') + '</span></span>';
+    html += '<span><span class="label">' + t('receiver') + ':</span> <span class="value">' + (d.receiver || '-') + '</span></span>';
+    html += '</div>';
+    if(d.receiverInfo){
+      var ri = d.receiverInfo;
+      html += '<div class="rcv-info"><span class="label">' + t('receiverInfo') + ':</span> ';
+      html += '<span>' + (ri.name || '') + '</span>';
+      html += '<span>' + (ri.country || '') + '</span>';
+      html += '<span>' + (ri.city || '') + '</span>';
+      html += '<span>' + (ri.address || '') + '</span>';
+      if(ri.cep) html += '<span>CEP ' + ri.cep + '</span>';
+      if(ri.tel) html += '<span>Tel ' + ri.tel + '</span>';
+      html += '</div>';
+    }
+    if(d.records && d.records.length > 0){
+      html += '<div class="rcv-info"><span class="label">' + t('trackDetail') + ':</span></div>';
+      html += '<table class="track-table">';
+      html += '<tr><th>' + t('time') + '</th><th>' + t('location') + '</th><th>' + t('desc') + '</th></tr>';
+      for(var m=0;m<d.records.length;m++){
+        var r = d.records[m];
+        html += '<tr><td>' + r.time + '</td><td>' + r.location + '</td><td>' + r.desc + '</td></tr>';
+      }
+      html += '</table>';
+    }
+    html += '</div>';
+  }
+  if(notFound.length > 0){
+    html += '<div class="miss-tip">' + t('notFound') + '：' + notFound.join('、') + '　' + t('notFoundMsg') + '</div>';
+  }
+  if(found.length === 0){
+    html = '<div class="no-data">' + t('notFoundMsg') + '</div>';
+  }
+  document.getElementById('resultBody').innerHTML = html;
+}
+
+function toggleManage(){
+  var p = document.getElementById('managePanel');
+  var btn = document.getElementById('btnManage');
+  var isOpen = p.style.display === 'block';
+  p.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '管理数据' : '关闭管理';
+  if(!isOpen) renderList();
+}
+
+function renderList(){
+  var list = document.getElementById('orderList');
+  if(!orders.length){ list.innerHTML = '<div class="no-data" style="padding:20px;">暂无运单，点右上角新增</div>'; return; }
+  list.innerHTML = orders.map(function(o, idx){
+    return '<div class="order-item">' +
+      '<div><div class="no">' + o.no + '</div><div class="meta">' + (o.receiver||'') + ' · ' + (o.destination||'') + ' · ' + (o.status||'') + '</div></div>' +
+      '<div class="acts">' +
+      '<button class="btn-ghost" onclick="openEdit(' + idx + ')">编辑</button>' +
+      '<button class="btn-danger" onclick="delOrder(' + idx + ')">删除</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+function delOrder(idx){
+  if(!confirm('确定删除该运单？')) return;
+  orders.splice(idx, 1);
+  saveDraft(orders);
+  renderList();
+}
+
+var editingIndex = null;
+
+function openEdit(idx){
+  editingIndex = idx;
+  var o = idx === null ? null : orders[idx];
+  document.getElementById('modalTitle').textContent = o ? '编辑运单' : '新增运单';
+  document.getElementById('f-no').value = o ? o.no : '';
+  document.getElementById('f-refNo').value = o ? (o.refNo||'') : '';
+  document.getElementById('f-dest').value = o ? (o.destination||'') : '';
+  document.getElementById('f-localTime').value = o ? (o.localTime||'') : '';
+  document.getElementById('f-status').value = o ? (o.status||'') : '';
+  document.getElementById('f-receiver').value = o ? (o.receiver||'') : '';
+  var ri = (o && o.receiverInfo) ? o.receiverInfo : {};
+  document.getElementById('f-r-name').value = ri.name || '';
+  document.getElementById('f-r-country').value = ri.country || '';
+  document.getElementById('f-r-city').value = ri.city || '';
+  document.getElementById('f-r-cep').value = ri.cep || '';
+  document.getElementById('f-r-address').value = ri.address || '';
+  document.getElementById('f-r-tel').value = ri.tel || '';
+  var ev = document.getElementById('events');
+  ev.innerHTML = '';
+  var recs = (o && o.records) ? o.records : [];
+  if(recs.length) recs.forEach(function(r){ addEventRow(r); });
+  else addEventRow();
+  showModal('modal');
+}
+
+function addEventRow(r){
+  r = r || { time:'', location:'', desc:'' };
+  var div = document.createElement('div');
+  div.className = 'ev-row';
+  div.innerHTML =
+    '<input class="e-time" placeholder="时间 2026-08-24 14:30" value="' + r.time + '">' +
+    '<input class="e-loc" placeholder="地点" value="' + r.location + '">' +
+    '<input class="e-desc" placeholder="状态描述" value="' + r.desc + '">' +
+    '<button class="btn-danger" onclick="this.parentNode.remove()">✕</button>';
+  document.getElementById('events').appendChild(div);
+}
+
+function saveOrder(){
+  var no = document.getElementById('f-no').value.trim();
+  if(!no){ alert('请填写运单号'); return; }
+  var records = [];
+  document.querySelectorAll('#events .ev-row').forEach(function(row){
+    var t = row.querySelector('.e-time').value.trim();
+    var l = row.querySelector('.e-loc').value.trim();
+    var d = row.querySelector('.e-desc').value.trim();
+    if(d) records.push({ time:t, location:l, desc:d });
+  });
+  var obj = {
+    no: no,
+    refNo: document.getElementById('f-refNo').value.trim(),
+    destination: document.getElementById('f-dest').value.trim(),
+    localTime: document.getElementById('f-localTime').value.trim(),
+    status: document.getElementById('f-status').value.trim(),
+    receiver: document.getElementById('f-receiver').value.trim(),
+    receiverInfo: {
+      name: document.getElementById('f-r-name').value.trim(),
+      country: document.getElementById('f-r-country').value.trim(),
+      city: document.getElementById('f-r-city').value.trim(),
+      address: document.getElementById('f-r-address').value.trim(),
+      cep: document.getElementById('f-r-cep').value.trim(),
+      tel: document.getElementById('f-r-tel').value.trim()
+    },
+    records: records
+  };
+  if(editingIndex === null) orders.push(obj);
+  else orders[editingIndex] = obj;
+  saveDraft(orders);
+  closeModal('modal');
+  renderList();
+}
+
+function buildExportText(){
+  var header = '// 物流数据文件（中国 → 西班牙 · CTT Express 渠道）\n// 修改查询信息就改这里，保存后重新部署即可生效\nwindow.ORDER_DATA = ';
+  return header + JSON.stringify(orders, null, 2) + ';\n';
+}
+function exportData(){
+  document.getElementById('exportText').value = buildExportText();
+  showModal('exportModal');
+}
+function copyExport(){
+  var ta = document.getElementById('exportText');
+  ta.select();
+  try{ document.execCommand('copy'); alert('已复制到剪贴板'); }catch(e){ alert('复制失败，请手动全选复制'); }
+}
+function downloadExport(){
+  var blob = new Blob([buildExportText()], { type:'application/javascript' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.js';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function resetData(){
+  if(!confirm('恢复为 data.js 里的示例数据？本地改动会被清除。')) return;
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  orders = getDefaultOrders();
+  renderList();
+}
+
+function showModal(id){ document.getElementById(id).style.display = 'flex'; }
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target.id === 'modal') closeModal('modal'); });
+document.getElementById('exportModal').addEventListener('click', function(e){ if(e.target.id === 'exportModal') closeModal('exportModal'); });
+
+document.getElementById('lblPrompt').textContent = t('noData');
+document.getElementById('btnQuery').textContent = t('query');
+document.getElementById('cno').placeholder = t('placeholder');
+document.title = t('title');
+</script>
+</body>
+</html>
