@@ -54,8 +54,8 @@ window.ORDER_DATA = [
     refNo: 'SZLD9901076884',
     createdAt: '2026-08-24',
     destination: 'Carmona (Sevilla), España',
-    localTime: '2026-08-24 22:53',
-    status: '订单已创建',
+    localTime: '2026-08-25 21:42',
+    status: '货物已揽收',
     receiver: 'FODE KANE',
     receiverInfo: {
       name: 'FODE KANE',
@@ -65,6 +65,8 @@ window.ORDER_DATA = [
       cep: '41410',
       tel: '+34 642 416 343'
     },
-    records: []
+    records: [
+      { time: '2026-08-25 21:42', location: '广州', desc: '货物已揽收到操作中心' }
+    ]
   }
 ];
