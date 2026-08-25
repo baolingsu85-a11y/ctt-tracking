@@ -14,6 +14,24 @@
 // ============================================================
 window.ORDER_DATA = [
   {
+    no: '0082800082909725396006',
+    refNo: 'SZLD9901086422',
+    createdAt: '2026-08-25',
+    destination: 'Madrid, España',
+    localTime: '2026-08-25 22:06',
+    status: '订单已创建',
+    receiver: 'Jesus Rodriguez correal',
+    receiverInfo: {
+      name: 'Jesus Rodriguez correal',
+      country: 'España',
+      city: 'Madrid',
+      address: 'virgen de los desamparados 6, 6D',
+      cep: '28041',
+      tel: '617 50 16 41'
+    },
+    records: []
+  },
+  {
     no: '0082800082909725384145',
     refNo: 'SZLD9901076859',
     createdAt: '2026-08-24',
